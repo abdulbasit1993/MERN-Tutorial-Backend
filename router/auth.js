@@ -22,20 +22,24 @@ router.post("/register", async (req, res) => {
 
     if (userExist) {
       return res.status(422).json({ error: "Email Already Exists" });
+    } else if (password != cpassword) {
+      return res.status(422).json({ error: "Passwords Do Not Match" });
+    } else {
+      const user = new User({
+        name,
+        email,
+        phone,
+        work,
+        password,
+        cpassword,
+      });
+
+      // password hashing function will be called first here at this line
+
+      await user.save();
+
+      res.status(201).json({ message: "User Registered Successfully" });
     }
-
-    const user = new User({
-      name,
-      email,
-      phone,
-      work,
-      password,
-      cpassword,
-    });
-
-    await user.save();
-
-    res.status(201).json({ message: "User Registered Successfully" });
   } catch (err) {
     console.log(err);
   }
